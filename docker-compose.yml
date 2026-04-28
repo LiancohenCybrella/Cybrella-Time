@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: cybrella-time-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: cybrella
+      POSTGRES_PASSWORD: cybrella_dev
+      POSTGRES_DB: cybrella_time
+    ports:
+      - "5432:5432"
+    volumes:
+      - cybrella_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cybrella -d cybrella_time"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  cybrella_pgdata:
