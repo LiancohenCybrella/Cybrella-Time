@@ -1,6 +1,4 @@
-from __future__ import annotations
-
-from datetime import date, datetime, time
+from datetime import date as Date, datetime, time
 from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, StringConstraints, model_validator
@@ -12,7 +10,7 @@ ApprovalStatus = Literal["submitted", "approved", "rejected"]
 
 
 class AttendanceBase(BaseModel):
-    date: date
+    date: Date
     check_in: time | None = None
     check_out: time | None = None
     day_type: DayType
@@ -33,7 +31,7 @@ class AttendanceCreate(AttendanceBase):
 
 
 class AttendanceUpdate(BaseModel):
-    date: date | None = None
+    date: Date | None = None
     check_in: time | None = None
     check_out: time | None = None
     day_type: DayType | None = None
