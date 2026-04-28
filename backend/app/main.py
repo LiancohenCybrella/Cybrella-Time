@@ -12,6 +12,7 @@ from app.core.config import settings
 from app.routes import admin as admin_routes
 from app.routes import attendance as attendance_routes
 from app.routes import auth as auth_routes
+from app.routes import holidays as holidays_routes
 from app.routes import users as users_routes
 
 
@@ -45,6 +46,7 @@ def create_app() -> FastAPI:
     app.include_router(users_routes.router)
     app.include_router(attendance_routes.router)
     app.include_router(admin_routes.router)
+    app.include_router(holidays_routes.router)
 
     @app.exception_handler(StarletteHTTPException)
     async def http_exc_handler(_: Request, exc: StarletteHTTPException) -> JSONResponse:
