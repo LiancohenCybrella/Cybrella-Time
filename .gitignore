@@ -48,3 +48,6 @@ backend/alembic/versions/__pycache__/
 
 # Docker
 docker-compose.override.yml
+
+# Internal docs
+docs/
