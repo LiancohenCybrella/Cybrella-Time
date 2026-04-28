@@ -4,15 +4,9 @@ import Login from "./pages/public/Login";
 import Register from "./pages/public/Register";
 import ForgotPassword from "./pages/public/ForgotPassword";
 import ResetPassword from "./pages/public/ResetPassword";
-
-// Phase 9 placeholders for user pages
-function UserHomePlaceholder() {
-  return (
-    <div className="grid min-h-screen place-items-center text-ink-600">
-      <p>User dashboard — coming in Phase 9.</p>
-    </div>
-  );
-}
+import Dashboard from "./pages/user/Dashboard";
+import Profile from "./pages/user/Profile";
+import ChangePassword from "./pages/user/ChangePassword";
 
 function AdminHomePlaceholder() {
   return (
@@ -34,10 +28,27 @@ export default function App() {
         path="/"
         element={
           <ProtectedRoute>
-            <UserHomePlaceholder />
+            <Dashboard />
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile/password"
+        element={
+          <ProtectedRoute>
+            <ChangePassword />
+          </ProtectedRoute>
+        }
+      />
+
       <Route
         path="/admin"
         element={

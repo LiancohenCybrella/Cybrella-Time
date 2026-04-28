@@ -1,0 +1,46 @@
+import type { DayType } from "../../api/attendance";
+
+export const DAY_TYPE_META: Record<
+  DayType,
+  { label: string; pill: string; dot: string }
+> = {
+  work: {
+    label: "Work",
+    pill: "bg-brand-50 text-brand-700 border-brand-100",
+    dot: "bg-brand-500",
+  },
+  vacation: {
+    label: "Vacation",
+    pill: "bg-amber-50 text-amber-800 border-amber-100",
+    dot: "bg-amber-500",
+  },
+  sick: {
+    label: "Sick",
+    pill: "bg-rose-50 text-rose-700 border-rose-100",
+    dot: "bg-rose-500",
+  },
+  reserve: {
+    label: "Reserve",
+    pill: "bg-purple-50 text-purple-700 border-purple-100",
+    dot: "bg-purple-500",
+  },
+  holiday: {
+    label: "Holiday",
+    pill: "bg-accent-500/15 text-accent-600 border-accent-500/30",
+    dot: "bg-accent-500",
+  },
+  other_absence: {
+    label: "Absence",
+    pill: "bg-ink-100 text-ink-700 border-ink-200",
+    dot: "bg-ink-400",
+  },
+};
+
+export const DAY_TYPE_OPTIONS: { value: DayType; label: string }[] = [
+  { value: "work", label: "Work day" },
+  { value: "vacation", label: "Vacation" },
+  { value: "sick", label: "Sick leave" },
+  { value: "reserve", label: "Reserve duty" },
+  { value: "holiday", label: "Holiday" },
+  { value: "other_absence", label: "Other absence" },
+];
