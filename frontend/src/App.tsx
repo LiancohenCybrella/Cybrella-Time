@@ -7,14 +7,10 @@ import ResetPassword from "./pages/public/ResetPassword";
 import Dashboard from "./pages/user/Dashboard";
 import Profile from "./pages/user/Profile";
 import ChangePassword from "./pages/user/ChangePassword";
-
-function AdminHomePlaceholder() {
-  return (
-    <div className="grid min-h-screen place-items-center text-ink-600">
-      <p>Admin dashboard — coming in Phase 10.</p>
-    </div>
-  );
-}
+import AdminDashboard from "./pages/admin/Dashboard";
+import AdminUsers from "./pages/admin/Users";
+import AdminUserAttendance from "./pages/admin/UserAttendance";
+import AdminHolidays from "./pages/admin/Holidays";
 
 export default function App() {
   return (
@@ -53,7 +49,31 @@ export default function App() {
         path="/admin"
         element={
           <ProtectedRoute adminOnly>
-            <AdminHomePlaceholder />
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/users"
+        element={
+          <ProtectedRoute adminOnly>
+            <AdminUsers />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/users/:id/attendance"
+        element={
+          <ProtectedRoute adminOnly>
+            <AdminUserAttendance />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/holidays"
+        element={
+          <ProtectedRoute adminOnly>
+            <AdminHolidays />
           </ProtectedRoute>
         }
       />
