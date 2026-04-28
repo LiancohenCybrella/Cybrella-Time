@@ -9,6 +9,8 @@ from sqlalchemy.exc import IntegrityError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.core.config import settings
+from app.routes import auth as auth_routes
+from app.routes import users as users_routes
 
 
 logger = logging.getLogger("cybrella-time")
@@ -36,6 +38,9 @@ def create_app() -> FastAPI:
     @app.get("/health", tags=["meta"])
     def health() -> dict[str, str]:
         return {"status": "ok"}
+
+    app.include_router(auth_routes.router)
+    app.include_router(users_routes.router)
 
     @app.exception_handler(StarletteHTTPException)
     async def http_exc_handler(_: Request, exc: StarletteHTTPException) -> JSONResponse:
