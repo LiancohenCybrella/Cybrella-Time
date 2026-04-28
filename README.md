@@ -33,8 +33,11 @@ cp .env.example .env  # fill VITE_API_URL
 npm run dev
 ```
 
+## Deployment
+See `docs/DEPLOY.md` for end-to-end instructions covering Railway (Postgres + backend) and Vercel (frontend), plus Resend domain verification.
+
 ## Build Phases
-This repo is built phase-by-phase; see `docs/architecture.md` §7 for the phase table. Each phase lands as a feature branch + PR into `main`.
+This repo was built phase-by-phase per `docs/architecture.md` §7. Each phase landed as a feature branch + merge into `main`.
 
 ## License
 MIT — see `LICENSE`.
