@@ -48,7 +48,7 @@ export default function Register() {
   }
 
   return (
-    <AuthShell title="Create account" subtitle="Cybrella employees only — @cybrella.io.">
+    <AuthShell title="Create account" subtitle="Registration is invite-only. Your email must be on the allow list.">
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <Input
           label="Full name"

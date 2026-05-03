@@ -2,7 +2,6 @@ import os
 
 os.environ.setdefault("DATABASE_URL", "sqlite+pysqlite:///:memory:")
 os.environ.setdefault("JWT_SECRET_KEY", "test-secret-key-do-not-use-in-prod")
-os.environ.setdefault("ALLOWED_EMAIL_DOMAIN", "cybrella.io")
 os.environ.setdefault("INITIAL_ADMIN_EMAIL", "lianc@cybrella.io")
 os.environ.setdefault("FRONTEND_URL", "http://localhost:5173")
 
@@ -14,21 +13,29 @@ from sqlalchemy.orm import sessionmaker
 from app import database
 from app.core.config import settings  # noqa: E402
 from app.database import Base, get_db
+from app import models  # noqa: F401  ensure all tables registered on Base.metadata
 from app.main import app
 
 
 # Patch CITEXT for SQLite tests
 from sqlalchemy.dialects.postgresql import CITEXT
-from sqlalchemy import String
+from sqlalchemy import CheckConstraint, String
 
 
 @event.listens_for(Base.metadata, "before_create")
-def _patch_citext(_, connection, **__):
-    if connection.dialect.name != "postgresql":
-        for table in Base.metadata.tables.values():
-            for col in table.columns:
-                if isinstance(col.type, CITEXT):
-                    col.type = String()
+def _patch_for_sqlite(_, connection, **__):
+    if connection.dialect.name == "postgresql":
+        return
+    for table in Base.metadata.tables.values():
+        for col in table.columns:
+            if isinstance(col.type, CITEXT):
+                col.type = String()
+        # SQLite cannot parse postgres-specific CHECK expressions like EXTRACT()
+        for constraint in list(table.constraints):
+            if isinstance(constraint, CheckConstraint):
+                sql = str(constraint.sqltext).upper()
+                if "EXTRACT" in sql or "~*" in sql:
+                    table.constraints.discard(constraint)
 
 
 @pytest.fixture
@@ -56,3 +63,16 @@ def client(db_session):
     with TestClient(app) as c:
         yield c
     app.dependency_overrides.clear()
+
+
+@pytest.fixture(autouse=True)
+def _seed_allowed_emails(db_session):
+    from app.models.allowed_email import AllowedEmail
+
+    for email in (
+        "alice@cybrella.io",
+        "bob@cybrella.io",
+        "u1@cybrella.io",
+    ):
+        db_session.add(AllowedEmail(email=email, default_role="user"))
+    db_session.commit()

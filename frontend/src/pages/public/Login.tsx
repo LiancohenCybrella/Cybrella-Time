@@ -29,7 +29,7 @@ export default function Login() {
   }
 
   return (
-    <AuthShell title="Sign in" subtitle="Use your @cybrella.io account.">
+    <AuthShell title="Sign in" subtitle="Use your work email.">
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <Input
           label="Email"

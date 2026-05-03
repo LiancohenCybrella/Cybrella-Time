@@ -11,6 +11,7 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import AdminUsers from "./pages/admin/Users";
 import AdminUserAttendance from "./pages/admin/UserAttendance";
 import AdminHolidays from "./pages/admin/Holidays";
+import AdminAllowedEmails from "./pages/admin/AllowedEmails";
 
 export default function App() {
   return (
@@ -74,6 +75,14 @@ export default function App() {
         element={
           <ProtectedRoute adminOnly>
             <AdminHolidays />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/allowed-emails"
+        element={
+          <ProtectedRoute adminOnly>
+            <AdminAllowedEmails />
           </ProtectedRoute>
         }
       />

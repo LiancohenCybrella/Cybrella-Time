@@ -43,10 +43,6 @@ class User(Base):
 
     __table_args__ = (
         CheckConstraint(
-            "email ~* '^[^@]+@cybrella\\.io$'",
-            name="users_email_domain_check",
-        ),
-        CheckConstraint(
             "employment_type IN ('full_time', 'part_time', 'hourly')",
             name="users_employment_type_check",
         ),
