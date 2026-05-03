@@ -6,7 +6,8 @@ export type DayType =
   | "sick"
   | "reserve"
   | "holiday"
-  | "other_absence";
+  | "other_absence"
+  | "full_day_activity";
 
 export type RecordStatus = "draft" | "submitted" | "approved" | "rejected";
 export type ApprovalStatus = "submitted" | "approved" | "rejected";
@@ -18,6 +19,7 @@ export type AttendanceRecord = {
   check_in: string | null;
   check_out: string | null;
   day_type: DayType;
+  partial_secondary_type: DayType | null;
   note: string | null;
   status: RecordStatus;
   total_hours: number | null;
@@ -33,6 +35,7 @@ export type MonthSummary = {
   reserve_days: number;
   holiday_days: number;
   other_absence_days: number;
+  full_day_activity_days: number;
   total_hours: number;
   submitted: boolean;
   approved: boolean;
@@ -50,6 +53,7 @@ export type CreatePayload = {
   check_in?: string | null;
   check_out?: string | null;
   day_type: DayType;
+  partial_secondary_type?: DayType | null;
   note?: string | null;
 };
 

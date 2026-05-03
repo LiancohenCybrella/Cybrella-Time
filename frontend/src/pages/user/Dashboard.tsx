@@ -47,6 +47,7 @@ export default function Dashboard() {
   async function onSave(payload: {
     date: string;
     day_type: attendanceApi.DayType;
+    partial_secondary_type: attendanceApi.DayType | null;
     check_in: string | null;
     check_out: string | null;
     note: string | null;

@@ -4,7 +4,15 @@ from typing import Annotated, Literal
 from pydantic import BaseModel, ConfigDict, StringConstraints, model_validator
 
 
-DayType = Literal["work", "vacation", "sick", "reserve", "holiday", "other_absence"]
+DayType = Literal[
+    "work",
+    "vacation",
+    "sick",
+    "reserve",
+    "holiday",
+    "other_absence",
+    "full_day_activity",
+]
 RecordStatus = Literal["draft", "submitted", "approved", "rejected"]
 ApprovalStatus = Literal["submitted", "approved", "rejected"]
 
@@ -14,13 +22,23 @@ class AttendanceBase(BaseModel):
     check_in: time | None = None
     check_out: time | None = None
     day_type: DayType
+    partial_secondary_type: DayType | None = None
     note: Annotated[str | None, StringConstraints(max_length=2000)] = None
 
     @model_validator(mode="after")
-    def _times_only_on_work(self) -> "AttendanceBase":
-        if self.day_type == "work":
+    def _validate_times_and_secondary(self) -> "AttendanceBase":
+        if (
+            self.partial_secondary_type is not None
+            and self.partial_secondary_type == self.day_type
+        ):
+            raise ValueError("partial_secondary_type must differ from day_type")
+
+        needs_hours = self.day_type == "work" or self.partial_secondary_type == "work"
+        if needs_hours:
             if self.check_in is None or self.check_out is None:
-                raise ValueError("check_in and check_out required for day_type=work")
+                raise ValueError(
+                    "check_in and check_out required when day involves work"
+                )
             if self.check_out <= self.check_in:
                 raise ValueError("check_out must be after check_in")
         return self
@@ -35,6 +53,7 @@ class AttendanceUpdate(BaseModel):
     check_in: time | None = None
     check_out: time | None = None
     day_type: DayType | None = None
+    partial_secondary_type: DayType | None = None
     note: Annotated[str | None, StringConstraints(max_length=2000)] = None
 
 
@@ -57,6 +76,7 @@ class MonthSummary(BaseModel):
     reserve_days: int
     holiday_days: int
     other_absence_days: int
+    full_day_activity_days: int = 0
     total_hours: float
     submitted: bool
     approved: bool

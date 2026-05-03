@@ -83,12 +83,29 @@ export function MonthCalendar({ month, records, holidays, locked, onPickDay }: P
                 </span>
               )}
               {rec && meta && (
-                <span
-                  className={`mt-2 inline-flex items-center gap-1.5 self-start rounded-full border px-2 py-0.5 text-[11px] font-medium ${meta.pill}`}
-                >
-                  <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
-                  {meta.label}
-                </span>
+                <div className="mt-2 flex flex-wrap gap-1">
+                  <span
+                    className={`inline-flex items-center gap-1.5 self-start rounded-full border px-2 py-0.5 text-[11px] font-medium ${meta.pill}`}
+                  >
+                    <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
+                    {meta.label}
+                  </span>
+                  {rec.partial_secondary_type && (
+                    <span
+                      className={`inline-flex items-center gap-1.5 self-start rounded-full border px-2 py-0.5 text-[11px] font-medium ${
+                        DAY_TYPE_META[rec.partial_secondary_type].pill
+                      }`}
+                      title="Secondary activity"
+                    >
+                      <span
+                        className={`h-1.5 w-1.5 rounded-full ${
+                          DAY_TYPE_META[rec.partial_secondary_type].dot
+                        }`}
+                      />
+                      + {DAY_TYPE_META[rec.partial_secondary_type].label}
+                    </span>
+                  )}
+                </div>
               )}
               {rec?.total_hours != null && (
                 <span className="mt-auto pt-1 text-xs text-ink-500">
