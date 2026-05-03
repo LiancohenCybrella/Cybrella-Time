@@ -7,10 +7,12 @@ def _register_payload(email: str = "alice@cybrella.io") -> dict:
     }
 
 
-def test_register_rejects_non_cybrella_domain(client) -> None:
-    resp = client.post("/auth/register", json=_register_payload(email="alice@gmail.com"))
-    assert resp.status_code == 400
-    assert "cybrella.io" in resp.json()["error"]
+def test_register_rejects_email_not_on_allow_list(client) -> None:
+    resp = client.post(
+        "/auth/register", json=_register_payload(email="stranger@gmail.com")
+    )
+    assert resp.status_code == 403
+    assert "allowed" in resp.json()["error"].lower()
 
 
 def test_register_creates_user_and_returns_token(client) -> None:

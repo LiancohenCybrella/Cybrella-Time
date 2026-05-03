@@ -10,8 +10,13 @@ from app.schemas.attendance import (
     AttendanceOut,
     AttendanceUpdate,
 )
+from app.schemas.allowed_email import (
+    AllowedEmailIn,
+    AllowedEmailOut,
+    AllowedEmailUpdate,
+)
 from app.schemas.user import MessageOut, UserAdminUpdate, UserOut
-from app.services import approval_service, attendance_service
+from app.services import allowed_email_service, approval_service, attendance_service
 from app.services.export_service import export_month_xlsx
 
 
@@ -186,6 +191,65 @@ def unlock(
     admin: User = Depends(require_admin),
 ) -> dict:
     return approval_service.unlock_month(db, admin=admin, user_id=user_id, month=month)
+
+
+# ---------- allowed emails (registration whitelist) ----------
+
+@router.get("/allowed-emails", response_model=list[AllowedEmailOut])
+def list_allowed_emails(
+    db: Session = Depends(get_db),
+    _: User = Depends(require_admin),
+) -> list[AllowedEmailOut]:
+    return [
+        AllowedEmailOut.model_validate(e)
+        for e in allowed_email_service.list_entries(db)
+    ]
+
+
+@router.post(
+    "/allowed-emails",
+    response_model=AllowedEmailOut,
+    status_code=status.HTTP_201_CREATED,
+)
+def add_allowed_email(
+    payload: AllowedEmailIn,
+    db: Session = Depends(get_db),
+    admin: User = Depends(require_admin),
+) -> AllowedEmailOut:
+    entry = allowed_email_service.add_entry(
+        db,
+        email=payload.email,
+        default_role=payload.default_role,
+        note=payload.note,
+        admin=admin,
+    )
+    return AllowedEmailOut.model_validate(entry)
+
+
+@router.put("/allowed-emails/{entry_id}", response_model=AllowedEmailOut)
+def update_allowed_email(
+    entry_id: int,
+    payload: AllowedEmailUpdate,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_admin),
+) -> AllowedEmailOut:
+    entry = allowed_email_service.update_entry(
+        db,
+        entry_id=entry_id,
+        default_role=payload.default_role,
+        note=payload.note,
+    )
+    return AllowedEmailOut.model_validate(entry)
+
+
+@router.delete("/allowed-emails/{entry_id}", response_model=MessageOut)
+def remove_allowed_email(
+    entry_id: int,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_admin),
+) -> MessageOut:
+    allowed_email_service.remove_entry(db, entry_id)
+    return MessageOut(message="removed")
 
 
 # ---------- export ----------

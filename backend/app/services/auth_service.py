@@ -1,4 +1,3 @@
-import re
 from datetime import datetime, timedelta, timezone
 
 from fastapi import HTTPException, status
@@ -23,19 +22,15 @@ from app.schemas.user import (
     UserOut,
     UserRegister,
 )
+from app.services.allowed_email_service import is_email_allowed, resolve_role
 from app.utils.email import send_password_reset_email
 
 
-def _email_domain_ok(email: str) -> bool:
-    pattern = rf"^[^@]+@{re.escape(settings.ALLOWED_EMAIL_DOMAIN)}$"
-    return bool(re.match(pattern, email, re.IGNORECASE))
-
-
 def register_user(db: Session, payload: UserRegister) -> TokenOut:
-    if not _email_domain_ok(payload.email):
+    if not is_email_allowed(db, payload.email):
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"email must end with @{settings.ALLOWED_EMAIL_DOMAIN}",
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="email not allowed — contact an administrator",
         )
 
     existing = db.query(User).filter(User.email == payload.email).one_or_none()
@@ -45,7 +40,7 @@ def register_user(db: Session, payload: UserRegister) -> TokenOut:
             detail="email already registered",
         )
 
-    role = "admin" if payload.email.lower() == settings.INITIAL_ADMIN_EMAIL.lower() else "user"
+    role = resolve_role(db, payload.email)
 
     user = User(
         email=payload.email,

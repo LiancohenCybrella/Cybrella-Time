@@ -22,7 +22,6 @@ class Settings(BaseSettings):
     RESEND_API_KEY: str = ""
     EMAIL_FROM: str = "noreply@cybrella.io"
 
-    ALLOWED_EMAIL_DOMAIN: str = "cybrella.io"
     INITIAL_ADMIN_EMAIL: str = "lianc@cybrella.io"
 
     DEFAULT_TIMEZONE: str = "Asia/Jerusalem"

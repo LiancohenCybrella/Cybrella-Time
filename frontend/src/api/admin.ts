@@ -84,3 +84,41 @@ export async function updateHoliday(
 export async function deleteHoliday(id: number): Promise<void> {
   await api.delete(`/admin/holidays/${id}`);
 }
+
+export interface AllowedEmail {
+  id: number;
+  email: string;
+  default_role: "user" | "admin";
+  note: string | null;
+  created_by_user_id: number | null;
+  created_at: string;
+}
+
+export async function listAllowedEmails(): Promise<AllowedEmail[]> {
+  const { data } = await api.get<AllowedEmail[]>("/admin/allowed-emails");
+  return data;
+}
+
+export async function addAllowedEmail(payload: {
+  email: string;
+  default_role?: "user" | "admin";
+  note?: string;
+}): Promise<AllowedEmail> {
+  const { data } = await api.post<AllowedEmail>("/admin/allowed-emails", payload);
+  return data;
+}
+
+export async function updateAllowedEmail(
+  id: number,
+  payload: { default_role?: "user" | "admin"; note?: string | null }
+): Promise<AllowedEmail> {
+  const { data } = await api.put<AllowedEmail>(
+    `/admin/allowed-emails/${id}`,
+    payload
+  );
+  return data;
+}
+
+export async function deleteAllowedEmail(id: number): Promise<void> {
+  await api.delete(`/admin/allowed-emails/${id}`);
+}

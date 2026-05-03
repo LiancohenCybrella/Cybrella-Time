@@ -51,6 +51,16 @@ export function AdminLayout({ children }: { children: ReactNode }) {
             >
               Holidays
             </NavLink>
+            <NavLink
+              to="/admin/allowed-emails"
+              className={({ isActive }) =>
+                `rounded-lg px-3 py-1.5 ${
+                  isActive ? "bg-white text-ink-900" : "text-white/80 hover:bg-white/10"
+                }`
+              }
+            >
+              Allowed emails
+            </NavLink>
             <Link to="/" className="rounded-lg px-3 py-1.5 text-white/80 hover:bg-white/10">
               My calendar
             </Link>
