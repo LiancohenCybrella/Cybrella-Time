@@ -29,6 +29,7 @@ class AttendanceRecord(Base):
     check_in: Mapped[time | None] = mapped_column(Time, nullable=True)
     check_out: Mapped[time | None] = mapped_column(Time, nullable=True)
     day_type: Mapped[str] = mapped_column(String, nullable=False)
+    partial_secondary_type: Mapped[str | None] = mapped_column(String, nullable=True)
     note: Mapped[str | None] = mapped_column(String, nullable=True)
     status: Mapped[str] = mapped_column(String, nullable=False, server_default=text("'draft'"))
 
@@ -44,8 +45,19 @@ class AttendanceRecord(Base):
     __table_args__ = (
         UniqueConstraint("user_id", "date", name="uq_attendance_user_date"),
         CheckConstraint(
-            "day_type IN ('work', 'vacation', 'sick', 'reserve', 'holiday', 'other_absence')",
+            "day_type IN ('work', 'vacation', 'sick', 'reserve', 'holiday', "
+            "'other_absence', 'full_day_activity')",
             name="attendance_day_type_check",
+        ),
+        CheckConstraint(
+            "partial_secondary_type IS NULL OR partial_secondary_type IN ("
+            "'work', 'vacation', 'sick', 'reserve', 'holiday', 'other_absence', "
+            "'full_day_activity')",
+            name="attendance_partial_secondary_type_check",
+        ),
+        CheckConstraint(
+            "partial_secondary_type IS NULL OR partial_secondary_type <> day_type",
+            name="attendance_partial_secondary_distinct_check",
         ),
         CheckConstraint(
             "status IN ('draft', 'submitted', 'approved', 'rejected')",

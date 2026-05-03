@@ -95,6 +95,7 @@ def list_my_month(db: Session, user: User, month: str) -> MonthAttendanceOut:
         "reserve": 0,
         "holiday": 0,
         "other_absence": 0,
+        "full_day_activity": 0,
     }
     total_hours = 0.0
     for r in records:
@@ -111,6 +112,7 @@ def list_my_month(db: Session, user: User, month: str) -> MonthAttendanceOut:
         reserve_days=counts["reserve"],
         holiday_days=counts["holiday"],
         other_absence_days=counts["other_absence"],
+        full_day_activity_days=counts["full_day_activity"],
         total_hours=round(total_hours, 2),
         submitted=approval is not None and approval.status in ("submitted", "approved"),
         approved=approval is not None and approval.status == "approved",
@@ -148,6 +150,7 @@ def create_record(db: Session, user: User, payload: AttendanceCreate) -> Attenda
         check_in=payload.check_in,
         check_out=payload.check_out,
         day_type=payload.day_type,
+        partial_secondary_type=payload.partial_secondary_type,
         note=payload.note,
         status="draft",
     )
@@ -170,11 +173,17 @@ def update_record(
     for key, value in data.items():
         setattr(rec, key, value)
 
-    if rec.day_type == "work":
+    if rec.partial_secondary_type is not None and rec.partial_secondary_type == rec.day_type:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="partial_secondary_type must differ from day_type",
+        )
+
+    if rec.day_type == "work" or rec.partial_secondary_type == "work":
         if rec.check_in is None or rec.check_out is None:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="check_in and check_out required for day_type=work",
+                detail="check_in and check_out required when day involves work",
             )
         if rec.check_out <= rec.check_in:
             raise HTTPException(

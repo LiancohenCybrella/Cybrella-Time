@@ -34,6 +34,11 @@ export const DAY_TYPE_META: Record<
     pill: "bg-ink-100 text-ink-700 border-ink-200",
     dot: "bg-ink-400",
   },
+  full_day_activity: {
+    label: "Full-day activity",
+    pill: "bg-emerald-50 text-emerald-700 border-emerald-100",
+    dot: "bg-emerald-500",
+  },
 };
 
 export const DAY_TYPE_OPTIONS: { value: DayType; label: string }[] = [
@@ -43,4 +48,5 @@ export const DAY_TYPE_OPTIONS: { value: DayType; label: string }[] = [
   { value: "reserve", label: "Reserve duty" },
   { value: "holiday", label: "Holiday" },
   { value: "other_absence", label: "Other absence" },
+  { value: "full_day_activity", label: "Full-day activity" },
 ];

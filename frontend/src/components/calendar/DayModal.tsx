@@ -14,6 +14,7 @@ type Props = {
   onSave: (payload: {
     date: string;
     day_type: DayType;
+    partial_secondary_type: DayType | null;
     check_in: string | null;
     check_out: string | null;
     note: string | null;
@@ -23,6 +24,8 @@ type Props = {
 
 export function DayModal({ open, date, record, locked, onClose, onSave, onDelete }: Props) {
   const [dayType, setDayType] = useState<DayType>("work");
+  const [hasSecondary, setHasSecondary] = useState(false);
+  const [secondaryType, setSecondaryType] = useState<DayType>("work");
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [note, setNote] = useState("");
@@ -34,11 +37,15 @@ export function DayModal({ open, date, record, locked, onClose, onSave, onDelete
     setError(null);
     if (record) {
       setDayType(record.day_type);
+      setHasSecondary(record.partial_secondary_type !== null);
+      setSecondaryType(record.partial_secondary_type ?? "work");
       setCheckIn(record.check_in?.slice(0, 5) ?? "");
       setCheckOut(record.check_out?.slice(0, 5) ?? "");
       setNote(record.note ?? "");
     } else {
       setDayType("work");
+      setHasSecondary(false);
+      setSecondaryType("work");
       setCheckIn("09:00");
       setCheckOut("17:00");
       setNote("");
@@ -47,17 +54,28 @@ export function DayModal({ open, date, record, locked, onClose, onSave, onDelete
 
   if (!date) return null;
 
+  const effectiveSecondary = hasSecondary ? secondaryType : null;
+  const involvesWork = dayType === "work" || effectiveSecondary === "work";
+  const secondaryConflicts = hasSecondary && secondaryType === dayType;
+
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     if (!date) return;
     setError(null);
+
+    if (secondaryConflicts) {
+      setError("Secondary type must differ from primary day type");
+      return;
+    }
+
     setSaving(true);
     try {
       await onSave({
         date,
         day_type: dayType,
-        check_in: dayType === "work" ? `${checkIn}:00` : null,
-        check_out: dayType === "work" ? `${checkOut}:00` : null,
+        partial_secondary_type: effectiveSecondary,
+        check_in: involvesWork ? `${checkIn}:00` : null,
+        check_out: involvesWork ? `${checkOut}:00` : null,
         note: note || null,
       });
       onClose();
@@ -89,7 +107,41 @@ export function DayModal({ open, date, record, locked, onClose, onSave, onDelete
           </select>
         </div>
 
-        {dayType === "work" && (
+        <div className="rounded-xl border border-ink-100 bg-ink-50/50 p-3">
+          <label className="flex items-center gap-2 text-sm font-medium text-ink-800">
+            <input
+              type="checkbox"
+              checked={hasSecondary}
+              disabled={locked}
+              onChange={(e) => setHasSecondary(e.target.checked)}
+            />
+            Partial day — also includes a secondary activity
+          </label>
+          {hasSecondary && (
+            <div className="mt-3">
+              <label className="label">Secondary type</label>
+              <select
+                className="input"
+                value={secondaryType}
+                disabled={locked}
+                onChange={(e) => setSecondaryType(e.target.value as DayType)}
+              >
+                {DAY_TYPE_OPTIONS.filter((o) => o.value !== dayType).map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+              {secondaryConflicts && (
+                <p className="mt-1 text-xs text-rose-600">
+                  Secondary must differ from primary.
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+
+        {involvesWork && (
           <div className="grid grid-cols-2 gap-3">
             <Input
               label="Check in"
