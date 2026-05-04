@@ -25,8 +25,10 @@ class AttendanceBase(BaseModel):
     partial_secondary_type: DayType | None = None
     note: Annotated[str | None, StringConstraints(max_length=2000)] = None
 
+
+class AttendanceCreate(AttendanceBase):
     @model_validator(mode="after")
-    def _validate_times_and_secondary(self) -> "AttendanceBase":
+    def _validate_times_and_secondary(self) -> "AttendanceCreate":
         if (
             self.partial_secondary_type is not None
             and self.partial_secondary_type == self.day_type
@@ -42,10 +44,6 @@ class AttendanceBase(BaseModel):
             if self.check_out <= self.check_in:
                 raise ValueError("check_out must be after check_in")
         return self
-
-
-class AttendanceCreate(AttendanceBase):
-    pass
 
 
 class AttendanceUpdate(BaseModel):
