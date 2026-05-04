@@ -11,6 +11,8 @@ from app.models.user import User
 from app.schemas.attendance import (
     AttendanceCreate,
     AttendanceOut,
+    AttendanceRangeCreate,
+    AttendanceRangeResult,
     AttendanceUpdate,
     MonthAttendanceOut,
     MonthSummary,
@@ -158,6 +160,64 @@ def create_record(db: Session, user: User, payload: AttendanceCreate) -> Attenda
     db.commit()
     db.refresh(rec)
     return _to_out(rec)
+
+
+def create_range(
+    db: Session, user: User, payload: AttendanceRangeCreate
+) -> AttendanceRangeResult:
+    days: list[date] = []
+    cur = payload.start_date
+    while cur <= payload.end_date:
+        days.append(cur)
+        cur = cur + timedelta(days=1)
+
+    for day in days:
+        _ensure_not_locked(db, user.id, day)
+
+    existing_dates = {
+        row.date
+        for row in db.query(AttendanceRecord)
+        .filter(
+            AttendanceRecord.user_id == user.id,
+            AttendanceRecord.date.in_(days),
+        )
+        .all()
+    }
+
+    if existing_dates and not payload.skip_existing:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"records already exist for: "
+            + ", ".join(d.isoformat() for d in sorted(existing_dates)),
+        )
+
+    created: list[AttendanceRecord] = []
+    skipped: list[date] = []
+    for day in days:
+        if day in existing_dates:
+            skipped.append(day)
+            continue
+        rec = AttendanceRecord(
+            user_id=user.id,
+            date=day,
+            check_in=payload.check_in,
+            check_out=payload.check_out,
+            day_type=payload.day_type,
+            partial_secondary_type=payload.partial_secondary_type,
+            note=payload.note,
+            status="draft",
+        )
+        db.add(rec)
+        created.append(rec)
+
+    db.commit()
+    for rec in created:
+        db.refresh(rec)
+
+    return AttendanceRangeResult(
+        created=[_to_out(r) for r in created],
+        skipped_dates=skipped,
+    )
 
 
 def update_record(
