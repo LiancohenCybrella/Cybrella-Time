@@ -31,7 +31,7 @@ export function UserLayout({ children }: { children: ReactNode }) {
                 }`
               }
             >
-              Calendar
+              לוח שנה
             </NavLink>
             <NavLink
               to="/profile"
@@ -41,21 +41,21 @@ export function UserLayout({ children }: { children: ReactNode }) {
                 }`
               }
             >
-              Profile
+              פרופיל
             </NavLink>
             {user?.role === "admin" && (
               <NavLink
                 to="/admin"
                 className="rounded-lg bg-accent-500/20 px-3 py-1.5 text-accent-600 hover:bg-accent-500/30"
               >
-                Admin
+                ניהול
               </NavLink>
             )}
             <button
               onClick={onLogout}
               className="rounded-lg px-3 py-1.5 text-ink-600 hover:bg-ink-100"
             >
-              Sign out
+              יציאה
             </button>
           </nav>
         </div>

@@ -19,7 +19,7 @@ export function useMonth(initial?: string) {
 
 export function monthLabel(month: string): string {
   const [y, m] = month.split("-").map(Number);
-  return new Date(y, m - 1, 1).toLocaleString("en-US", { month: "long", year: "numeric" });
+  return new Date(y, m - 1, 1).toLocaleString("he-IL", { month: "long", year: "numeric" });
 }
 
 export function monthDays(month: string): Date[] {

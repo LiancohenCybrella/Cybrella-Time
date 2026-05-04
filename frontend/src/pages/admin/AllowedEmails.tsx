@@ -49,7 +49,7 @@ export default function AllowedEmails() {
   }
 
   async function onRemove(id: number) {
-    if (!confirm("Remove this email from the allow list?")) return;
+    if (!confirm("להסיר את המייל מרשימת המורשים?")) return;
     try {
       await adminApi.deleteAllowedEmail(id);
       await load();
@@ -70,7 +70,7 @@ export default function AllowedEmails() {
   return (
     <AdminLayout>
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold tracking-tight">Allowed emails</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">מיילים מורשים</h1>
       </div>
 
       {error && (
@@ -84,14 +84,14 @@ export default function AllowedEmails() {
         className="card mb-6 grid grid-cols-1 gap-3 md:grid-cols-[2fr_1fr_2fr_auto]"
       >
         <Input
-          label="Email"
+          label="אימייל"
           type="email"
           required
           value={form.email}
           onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
         />
         <div>
-          <label className="label">Default role</label>
+          <label className="label">תפקיד ברירת מחדל</label>
           <select
             className="input"
             value={form.default_role}
@@ -102,18 +102,18 @@ export default function AllowedEmails() {
               }))
             }
           >
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
+            <option value="user">משתמש</option>
+            <option value="admin">מנהל</option>
           </select>
         </div>
         <Input
-          label="Note (optional)"
+          label="הערה (אופציונלי)"
           value={form.note}
           onChange={(e) => setForm((f) => ({ ...f, note: e.target.value }))}
         />
         <div className="flex items-end">
           <Button type="submit" loading={submitting}>
-            Add
+            הוסף
           </Button>
         </div>
       </form>
@@ -121,11 +121,11 @@ export default function AllowedEmails() {
       <div className="card overflow-x-auto">
         <table className="min-w-full text-sm">
           <thead>
-            <tr className="border-b border-ink-100 text-left text-xs uppercase tracking-wider text-ink-500">
-              <th className="py-2 pr-3">Email</th>
-              <th className="py-2 pr-3">Default role</th>
-              <th className="py-2 pr-3">Note</th>
-              <th className="py-2 pr-3">Added</th>
+            <tr className="border-b border-ink-100 text-right text-xs uppercase tracking-wider text-ink-500">
+              <th className="py-2 pr-3">אימייל</th>
+              <th className="py-2 pr-3">תפקיד</th>
+              <th className="py-2 pr-3">הערה</th>
+              <th className="py-2 pr-3">נוסף</th>
               <th className="py-2 pr-3"></th>
             </tr>
           </thead>
@@ -141,17 +141,17 @@ export default function AllowedEmails() {
                     }
                     className="rounded-lg border border-ink-200 px-2 py-1 text-xs"
                   >
-                    <option value="user">user</option>
-                    <option value="admin">admin</option>
+                    <option value="user">משתמש</option>
+                    <option value="admin">מנהל</option>
                   </select>
                 </td>
                 <td className="py-2 pr-3 text-ink-600">{e.note || "—"}</td>
                 <td className="py-2 pr-3 text-ink-500 text-xs">
-                  {new Date(e.created_at).toLocaleDateString()}
+                  {new Date(e.created_at).toLocaleDateString("he-IL")}
                 </td>
-                <td className="py-2 pr-3 text-right">
+                <td className="py-2 pr-3 text-left">
                   <Button variant="ghost" onClick={() => onRemove(e.id)}>
-                    Remove
+                    הסר
                   </Button>
                 </td>
               </tr>
@@ -159,7 +159,7 @@ export default function AllowedEmails() {
             {entries.length === 0 && (
               <tr>
                 <td colSpan={5} className="py-6 text-center text-ink-500">
-                  No allowed emails yet. Add one above to let someone register.
+                  אין עדיין מיילים מורשים. הוסף מייל למעלה כדי לאפשר הרשמה.
                 </td>
               </tr>
             )}

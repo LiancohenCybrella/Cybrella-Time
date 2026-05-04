@@ -48,23 +48,23 @@ export default function Register() {
   }
 
   return (
-    <AuthShell title="Create account" subtitle="Registration is invite-only. Your email must be on the allow list.">
+    <AuthShell title="יצירת חשבון" subtitle="הרשמה רק עם הזמנה — יש להיות ברשימת המורשים.">
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <Input
-          label="Full name"
+          label="שם מלא"
           required
           value={form.full_name}
           onChange={(e) => set("full_name", e.target.value)}
         />
         <Input
-          label="Email"
+          label="אימייל"
           type="email"
           required
           value={form.email}
           onChange={(e) => set("email", e.target.value)}
         />
         <Input
-          label="Password"
+          label="סיסמה"
           type="password"
           required
           minLength={8}
@@ -73,24 +73,24 @@ export default function Register() {
         />
         <div className="grid grid-cols-2 gap-3">
           <Input
-            label="Job title"
+            label="תפקיד"
             value={form.job_title}
             onChange={(e) => set("job_title", e.target.value)}
           />
           <Input
-            label="Department"
+            label="מחלקה"
             value={form.department}
             onChange={(e) => set("department", e.target.value)}
           />
         </div>
         <Input
-          label="Phone"
+          label="טלפון"
           type="tel"
           value={form.phone}
           onChange={(e) => set("phone", e.target.value)}
         />
         <div>
-          <label className="label">Employment type</label>
+          <label className="label">סוג העסקה</label>
           <select
             className="input"
             value={form.employment_type}
@@ -98,19 +98,19 @@ export default function Register() {
               set("employment_type", e.target.value as typeof form.employment_type)
             }
           >
-            <option value="full_time">Full-time</option>
-            <option value="part_time">Part-time</option>
-            <option value="hourly">Hourly</option>
+            <option value="full_time">משרה מלאה</option>
+            <option value="part_time">משרה חלקית</option>
+            <option value="hourly">שעתי</option>
           </select>
         </div>
         {error && <p className="text-sm text-rose-600">{error}</p>}
         <Button type="submit" loading={loading}>
-          Create account
+          יצירת חשבון
         </Button>
         <p className="text-center text-xs text-ink-600">
-          Already have an account?{" "}
+          כבר יש לך חשבון?{" "}
           <Link to="/login" className="text-brand-600 hover:underline">
-            Sign in
+            התחברות
           </Link>
         </p>
       </form>

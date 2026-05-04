@@ -17,7 +17,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
             <span className="grid h-7 w-7 place-items-center rounded-lg bg-accent-500 text-ink-900">
               C
             </span>
-            <span>Cybrella Time · Admin</span>
+            <span>Cybrella Time · ניהול</span>
           </Link>
           <nav className="flex items-center gap-1 text-sm">
             <NavLink
@@ -29,7 +29,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
                 }`
               }
             >
-              Overview
+              סקירה
             </NavLink>
             <NavLink
               to="/admin/users"
@@ -39,7 +39,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
                 }`
               }
             >
-              Users
+              משתמשים
             </NavLink>
             <NavLink
               to="/admin/holidays"
@@ -49,7 +49,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
                 }`
               }
             >
-              Holidays
+              חגים
             </NavLink>
             <NavLink
               to="/admin/allowed-emails"
@@ -59,16 +59,16 @@ export function AdminLayout({ children }: { children: ReactNode }) {
                 }`
               }
             >
-              Allowed emails
+              מיילים מורשים
             </NavLink>
             <Link to="/" className="rounded-lg px-3 py-1.5 text-white/80 hover:bg-white/10">
-              My calendar
+              הלוח שלי
             </Link>
             <button
               onClick={onLogout}
               className="rounded-lg px-3 py-1.5 text-white/80 hover:bg-white/10"
             >
-              Sign out
+              יציאה
             </button>
           </nav>
         </div>

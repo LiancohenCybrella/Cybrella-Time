@@ -29,10 +29,10 @@ export default function Login() {
   }
 
   return (
-    <AuthShell title="Sign in" subtitle="Use your work email.">
+    <AuthShell title="התחברות" subtitle="היכנס עם מייל העבודה שלך.">
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <Input
-          label="Email"
+          label="אימייל"
           type="email"
           autoComplete="email"
           required
@@ -40,7 +40,7 @@ export default function Login() {
           onChange={(e) => setEmail(e.target.value)}
         />
         <Input
-          label="Password"
+          label="סיסמה"
           type="password"
           autoComplete="current-password"
           required
@@ -49,14 +49,14 @@ export default function Login() {
         />
         {error && <p className="text-sm text-rose-600">{error}</p>}
         <Button type="submit" loading={loading}>
-          Sign in
+          התחברות
         </Button>
         <div className="flex items-center justify-between text-xs text-ink-600">
           <Link to="/forgot-password" className="hover:text-brand-600">
-            Forgot password?
+            שכחת סיסמה?
           </Link>
           <Link to="/register" className="hover:text-brand-600">
-            Create account
+            יצירת חשבון
           </Link>
         </div>
       </form>

@@ -58,7 +58,7 @@ export default function Dashboard() {
       await attendanceApi.createRecord(payload);
     }
     await load();
-    setToast("Saved.");
+    setToast("נשמר.");
     setTimeout(() => setToast(null), 1800);
   }
 
@@ -66,7 +66,7 @@ export default function Dashboard() {
     if (!recordForDate) return;
     await attendanceApi.deleteRecord(recordForDate.id);
     await load();
-    setToast("Deleted.");
+    setToast("נמחק.");
     setTimeout(() => setToast(null), 1800);
   }
 
@@ -75,7 +75,7 @@ export default function Dashboard() {
     try {
       await attendanceApi.submitMonth(month);
       await load();
-      setToast("Month submitted for review.");
+      setToast("החודש הוגש לאישור.");
       setTimeout(() => setToast(null), 2200);
     } catch (err) {
       setError(apiError(err));
@@ -92,17 +92,17 @@ export default function Dashboard() {
     <UserLayout>
       <section className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
-          <Button variant="ghost" onClick={() => shift(-1)} aria-label="previous month">
+          <Button variant="ghost" onClick={() => shift(-1)} aria-label="חודש קודם">
             ←
           </Button>
           <h1 className="text-2xl font-semibold tracking-tight">{monthLabel(month)}</h1>
-          <Button variant="ghost" onClick={() => shift(1)} aria-label="next month">
+          <Button variant="ghost" onClick={() => shift(1)} aria-label="חודש הבא">
             →
           </Button>
         </div>
         <div className="flex gap-2">
           <Button onClick={onSubmitMonth} loading={submitting} disabled={!canSubmit}>
-            Submit month
+            הגש חודש
           </Button>
         </div>
       </section>
@@ -131,7 +131,7 @@ export default function Dashboard() {
       )}
 
       {loading && !data && (
-        <div className="grid place-items-center py-12 text-ink-500">Loading…</div>
+        <div className="grid place-items-center py-12 text-ink-500">טוען…</div>
       )}
 
       <DayModal
