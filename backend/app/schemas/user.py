@@ -38,10 +38,18 @@ class UserOut(UserBase):
     id: int
     role: Role
     is_active: bool
+    must_change_password: bool = False
     created_at: datetime
     updated_at: datetime | None = None
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class AdminPasswordResetOut(BaseModel):
+    user_id: int
+    email: str
+    temp_password: str
+    message: str = "סיסמה זמנית נוצרה. שלח אותה למשתמש."
 
 
 class LoginIn(BaseModel):

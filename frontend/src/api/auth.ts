@@ -10,6 +10,7 @@ export type User = {
   employment_type: "full_time" | "part_time" | "hourly";
   role: "user" | "admin";
   is_active: boolean;
+  must_change_password?: boolean;
 };
 
 export type TokenOut = { access_token: string; token_type: string; user: User };
