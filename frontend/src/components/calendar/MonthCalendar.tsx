@@ -11,7 +11,7 @@ type Props = {
   onPickDay: (isoDate: string) => void;
 };
 
-const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const WEEKDAYS = ["א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳", "ש׳"];
 
 export function MonthCalendar({ month, records, holidays, locked, onPickDay }: Props) {
   const days = monthDays(month);
@@ -68,12 +68,12 @@ export function MonthCalendar({ month, records, holidays, locked, onPickDay }: P
                 </span>
                 {rec?.status === "approved" && (
                   <span className="text-[10px] uppercase tracking-wider text-accent-600">
-                    ✓ approved
+                    ✓ אושר
                   </span>
                 )}
                 {rec?.status === "submitted" && (
                   <span className="text-[10px] uppercase tracking-wider text-brand-600">
-                    submitted
+                    הוגש
                   </span>
                 )}
               </div>
@@ -109,7 +109,7 @@ export function MonthCalendar({ month, records, holidays, locked, onPickDay }: P
               )}
               {rec?.total_hours != null && (
                 <span className="mt-auto pt-1 text-xs text-ink-500">
-                  {rec.total_hours.toFixed(2)} h
+                  {rec.total_hours.toFixed(2)} ש׳
                 </span>
               )}
             </button>

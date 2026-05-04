@@ -64,7 +64,7 @@ export function DayModal({ open, date, record, locked, onClose, onSave, onDelete
     setError(null);
 
     if (secondaryConflicts) {
-      setError("Secondary type must differ from primary day type");
+      setError("סוג משני חייב להיות שונה מסוג ראשי");
       return;
     }
 
@@ -81,7 +81,7 @@ export function DayModal({ open, date, record, locked, onClose, onSave, onDelete
       onClose();
     } catch (err: unknown) {
       const msg =
-        err instanceof Error ? err.message : "could not save record";
+        err instanceof Error ? err.message : "שמירה נכשלה";
       setError(msg);
     } finally {
       setSaving(false);
@@ -89,10 +89,10 @@ export function DayModal({ open, date, record, locked, onClose, onSave, onDelete
   }
 
   return (
-    <Modal open={open} onClose={onClose} title={`Day report — ${date}`}>
+    <Modal open={open} onClose={onClose} title={`דיווח יום — ${date}`}>
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <div>
-          <label className="label">Day type</label>
+          <label className="label">סוג יום</label>
           <select
             className="input"
             value={dayType}
@@ -115,11 +115,11 @@ export function DayModal({ open, date, record, locked, onClose, onSave, onDelete
               disabled={locked}
               onChange={(e) => setHasSecondary(e.target.checked)}
             />
-            Partial day — also includes a secondary activity
+            חצי יום — כולל פעילות משנית
           </label>
           {hasSecondary && (
             <div className="mt-3">
-              <label className="label">Secondary type</label>
+              <label className="label">סוג משני</label>
               <select
                 className="input"
                 value={secondaryType}
@@ -134,7 +134,7 @@ export function DayModal({ open, date, record, locked, onClose, onSave, onDelete
               </select>
               {secondaryConflicts && (
                 <p className="mt-1 text-xs text-rose-600">
-                  Secondary must differ from primary.
+                  סוג משני חייב להיות שונה מסוג ראשי.
                 </p>
               )}
             </div>
@@ -144,7 +144,7 @@ export function DayModal({ open, date, record, locked, onClose, onSave, onDelete
         {involvesWork && (
           <div className="grid grid-cols-2 gap-3">
             <Input
-              label="Check in"
+              label="שעת כניסה"
               type="time"
               required
               value={checkIn}
@@ -152,7 +152,7 @@ export function DayModal({ open, date, record, locked, onClose, onSave, onDelete
               onChange={(e) => setCheckIn(e.target.value)}
             />
             <Input
-              label="Check out"
+              label="שעת יציאה"
               type="time"
               required
               value={checkOut}
@@ -163,13 +163,13 @@ export function DayModal({ open, date, record, locked, onClose, onSave, onDelete
         )}
 
         <div>
-          <label className="label">Note</label>
+          <label className="label">הערה</label>
           <textarea
             className="input min-h-[80px]"
             value={note}
             disabled={locked}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Optional notes…"
+            placeholder="הערות (אופציונלי)…"
           />
         </div>
 
@@ -191,15 +191,15 @@ export function DayModal({ open, date, record, locked, onClose, onSave, onDelete
               }}
               loading={saving}
             >
-              Delete
+              מחק
             </Button>
           )}
           <Button type="button" variant="ghost" onClick={onClose}>
-            Close
+            סגור
           </Button>
           {!locked && (
             <Button type="submit" loading={saving}>
-              {record ? "Update" : "Save"}
+              {record ? "עדכן" : "שמור"}
             </Button>
           )}
         </div>
