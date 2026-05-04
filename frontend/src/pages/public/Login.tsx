@@ -52,9 +52,9 @@ export default function Login() {
           התחברות
         </Button>
         <div className="flex items-center justify-between text-xs text-ink-600">
-          <Link to="/forgot-password" className="hover:text-brand-600">
-            שכחת סיסמה?
-          </Link>
+          <span className="text-ink-500">
+            שכחת סיסמה? פנה למנהל לאיפוס.
+          </span>
           <Link to="/register" className="hover:text-brand-600">
             יצירת חשבון
           </Link>
