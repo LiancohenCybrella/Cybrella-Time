@@ -64,7 +64,7 @@ export function DayModal({ open, date, record, locked, onClose, onSave, onDelete
     setError(null);
 
     if (secondaryConflicts) {
-      setError("סוג משני חייב להיות שונה מסוג ראשי");
+      setError("הפעילות הנוספת חייבת להיות שונה מהראשית");
       return;
     }
 
@@ -115,11 +115,11 @@ export function DayModal({ open, date, record, locked, onClose, onSave, onDelete
               disabled={locked}
               onChange={(e) => setHasSecondary(e.target.checked)}
             />
-            חצי יום — כולל פעילות משנית
+            פעילות נוספת
           </label>
           {hasSecondary && (
             <div className="mt-3">
-              <label className="label">סוג משני</label>
+              <label className="label">סוג הפעילות הנוספת</label>
               <select
                 className="input"
                 value={secondaryType}
@@ -134,7 +134,7 @@ export function DayModal({ open, date, record, locked, onClose, onSave, onDelete
               </select>
               {secondaryConflicts && (
                 <p className="mt-1 text-xs text-rose-600">
-                  סוג משני חייב להיות שונה מסוג ראשי.
+                  הפעילות הנוספת חייבת להיות שונה מהראשית.
                 </p>
               )}
             </div>

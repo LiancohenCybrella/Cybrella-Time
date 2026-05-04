@@ -164,7 +164,7 @@ export default function UserAttendance() {
                         className={`mr-1 inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs ${
                           DAY_TYPE_META[r.partial_secondary_type].pill
                         }`}
-                        title="פעילות משנית"
+                        title="פעילות נוספת"
                       >
                         <span
                           className={`h-1.5 w-1.5 rounded-full ${
