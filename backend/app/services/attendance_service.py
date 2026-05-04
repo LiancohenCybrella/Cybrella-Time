@@ -102,6 +102,8 @@ def list_my_month(db: Session, user: User, month: str) -> MonthAttendanceOut:
     total_hours = 0.0
     for r in records:
         counts[r.day_type] = counts.get(r.day_type, 0) + 1
+        if r.partial_secondary_type:
+            counts[r.partial_secondary_type] = counts.get(r.partial_secondary_type, 0) + 1
         if r.total_hours:
             total_hours += r.total_hours
 
