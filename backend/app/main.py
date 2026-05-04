@@ -27,12 +27,17 @@ def create_app() -> FastAPI:
         description="Internal HR time-attendance service.",
     )
 
-    cors_origins = [settings.FRONTEND_URL]
-    vercel_preview = re.compile(r"^https://cybrella-time-[\w-]+\.vercel\.app$")
+    cors_origins = list({
+        settings.FRONTEND_URL,
+        "https://cybrella-time.vercel.app",
+        "http://localhost:5173",
+    })
+    # Match production + preview deployments on Vercel
+    vercel_pattern = r"^https://cybrella-time(-[\w-]+)?\.vercel\.app$"
     app.add_middleware(
         CORSMiddleware,
         allow_origins=cors_origins,
-        allow_origin_regex=vercel_preview.pattern,
+        allow_origin_regex=vercel_pattern,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
