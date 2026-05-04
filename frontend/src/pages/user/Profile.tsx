@@ -7,6 +7,8 @@ import { UserLayout } from "../../components/layout/UserLayout";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
 
+const ROLE_HE: Record<string, string> = { admin: "מנהל", user: "משתמש" };
+
 export default function Profile() {
   const { user, refresh } = useAuth();
   const [form, setForm] = useState({
@@ -38,7 +40,7 @@ export default function Profile() {
     try {
       await updateMe(form);
       await refresh();
-      setToast("Profile updated.");
+      setToast("הפרופיל עודכן.");
       setTimeout(() => setToast(null), 1800);
     } catch (err) {
       setError(apiError(err));
@@ -49,7 +51,7 @@ export default function Profile() {
 
   return (
     <UserLayout>
-      <h1 className="mb-5 text-2xl font-semibold tracking-tight">Profile</h1>
+      <h1 className="mb-5 text-2xl font-semibold tracking-tight">פרופיל</h1>
       <form onSubmit={onSubmit} className="card flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <div className="grid h-14 w-14 place-items-center rounded-2xl bg-brand-600 text-xl font-semibold text-white">
@@ -57,34 +59,36 @@ export default function Profile() {
           </div>
           <div>
             <p className="font-medium">{user?.email}</p>
-            <p className="text-xs uppercase tracking-wider text-ink-500">{user?.role}</p>
+            <p className="text-xs uppercase tracking-wider text-ink-500">
+              {user ? ROLE_HE[user.role] ?? user.role : ""}
+            </p>
           </div>
         </div>
 
         <Input
-          label="Full name"
+          label="שם מלא"
           value={form.full_name}
           onChange={(e) => setForm({ ...form, full_name: e.target.value })}
         />
         <div className="grid grid-cols-2 gap-3">
           <Input
-            label="Job title"
+            label="תפקיד"
             value={form.job_title}
             onChange={(e) => setForm({ ...form, job_title: e.target.value })}
           />
           <Input
-            label="Department"
+            label="מחלקה"
             value={form.department}
             onChange={(e) => setForm({ ...form, department: e.target.value })}
           />
         </div>
         <Input
-          label="Phone"
+          label="טלפון"
           value={form.phone}
           onChange={(e) => setForm({ ...form, phone: e.target.value })}
         />
         <div>
-          <label className="label">Employment type</label>
+          <label className="label">סוג העסקה</label>
           <select
             className="input"
             value={form.employment_type}
@@ -95,9 +99,9 @@ export default function Profile() {
               })
             }
           >
-            <option value="full_time">Full-time</option>
-            <option value="part_time">Part-time</option>
-            <option value="hourly">Hourly</option>
+            <option value="full_time">משרה מלאה</option>
+            <option value="part_time">משרה חלקית</option>
+            <option value="hourly">שעתי</option>
           </select>
         </div>
 
@@ -105,10 +109,10 @@ export default function Profile() {
 
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <Link to="/profile/password" className="text-sm text-brand-600 hover:underline">
-            Change password →
+            שינוי סיסמה ←
           </Link>
           <Button type="submit" loading={saving}>
-            Save changes
+            שמור שינויים
           </Button>
         </div>
       </form>

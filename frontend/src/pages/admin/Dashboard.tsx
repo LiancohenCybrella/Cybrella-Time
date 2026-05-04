@@ -55,7 +55,7 @@ export default function AdminDashboard() {
           </Button>
         </div>
         <Button onClick={onExport} loading={exporting}>
-          Export {month} (.xlsx)
+          ייצוא {month} (.xlsx)
         </Button>
       </section>
 
@@ -67,9 +67,9 @@ export default function AdminDashboard() {
 
       <div className="card">
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-ink-600">
-          Active employees ({users.length})
+          עובדים פעילים ({users.length})
         </h2>
-        {loading && <p className="text-sm text-ink-500">Loading…</p>}
+        {loading && <p className="text-sm text-ink-500">טוען…</p>}
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {users.map((u) => (
             <Link
@@ -86,7 +86,7 @@ export default function AdminDashboard() {
                   {u.department || "—"} · {u.email}
                 </p>
               </div>
-              <span className="ml-auto text-ink-400 group-hover:text-brand-500">→</span>
+              <span className="ml-auto text-ink-400 group-hover:text-brand-500">←</span>
             </Link>
           ))}
         </div>
