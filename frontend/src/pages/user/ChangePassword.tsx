@@ -18,7 +18,7 @@ export default function ChangePassword() {
     e.preventDefault();
     setError(null);
     if (next !== confirm) {
-      setError("passwords do not match");
+      setError("הסיסמאות אינן תואמות");
       return;
     }
     setSaving(true);
@@ -34,17 +34,17 @@ export default function ChangePassword() {
 
   return (
     <UserLayout>
-      <h1 className="mb-5 text-2xl font-semibold tracking-tight">Change password</h1>
+      <h1 className="mb-5 text-2xl font-semibold tracking-tight">שינוי סיסמה</h1>
       <form onSubmit={onSubmit} className="card flex max-w-md flex-col gap-4">
         <Input
-          label="Current password"
+          label="סיסמה נוכחית"
           type="password"
           required
           value={current}
           onChange={(e) => setCurrent(e.target.value)}
         />
         <Input
-          label="New password"
+          label="סיסמה חדשה"
           type="password"
           required
           minLength={8}
@@ -52,7 +52,7 @@ export default function ChangePassword() {
           onChange={(e) => setNext(e.target.value)}
         />
         <Input
-          label="Confirm new password"
+          label="אימות סיסמה חדשה"
           type="password"
           required
           minLength={8}
@@ -62,7 +62,7 @@ export default function ChangePassword() {
         {error && <p className="text-sm text-rose-600">{error}</p>}
         <div className="flex justify-end">
           <Button type="submit" loading={saving}>
-            Update password
+            עדכן סיסמה
           </Button>
         </div>
       </form>

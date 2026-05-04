@@ -9,6 +9,13 @@ import { Button } from "../../components/ui/Button";
 import { DAY_TYPE_META } from "../../components/calendar/dayTypeMeta";
 import { monthLabel, useMonth } from "../../hooks/useMonth";
 
+const STATUS_HE: Record<string, string> = {
+  draft: "טיוטה",
+  submitted: "הוגש",
+  approved: "אושר",
+  rejected: "נדחה",
+};
+
 export default function UserAttendance() {
   const params = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
@@ -56,7 +63,7 @@ export default function UserAttendance() {
   }
 
   async function reject() {
-    const reason = prompt("Rejection reason (optional)") ?? undefined;
+    const reason = prompt("סיבת דחייה (אופציונלי)") ?? undefined;
     setWorking(true);
     try {
       await adminApi.rejectMonth(userId, month, reason);
@@ -111,32 +118,32 @@ export default function UserAttendance() {
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <Button onClick={approve} loading={working} disabled={records.length === 0}>
-          Approve month
+          אשר חודש
         </Button>
         <Button variant="ghost" onClick={reject} loading={working}>
-          Reject month
+          דחה חודש
         </Button>
         {anyApproved && (
           <Button variant="ghost" onClick={unlock} loading={working}>
-            Unlock month
+            בטל נעילת חודש
           </Button>
         )}
         <span className="ml-auto text-sm text-ink-600">
-          {records.length} records · {totalHours.toFixed(2)} h
+          {records.length} רשומות · {totalHours.toFixed(2)} ש׳
         </span>
       </div>
 
       <div className="card overflow-x-auto">
         <table className="min-w-full text-sm">
           <thead>
-            <tr className="border-b border-ink-100 text-left text-xs uppercase tracking-wider text-ink-500">
-              <th className="py-2 pr-3">Date</th>
-              <th className="py-2 pr-3">Type</th>
-              <th className="py-2 pr-3">Check in</th>
-              <th className="py-2 pr-3">Check out</th>
-              <th className="py-2 pr-3">Hours</th>
-              <th className="py-2 pr-3">Status</th>
-              <th className="py-2 pr-3">Note</th>
+            <tr className="border-b border-ink-100 text-right text-xs uppercase tracking-wider text-ink-500">
+              <th className="py-2 pr-3">תאריך</th>
+              <th className="py-2 pr-3">סוג</th>
+              <th className="py-2 pr-3">כניסה</th>
+              <th className="py-2 pr-3">יציאה</th>
+              <th className="py-2 pr-3">שעות</th>
+              <th className="py-2 pr-3">סטטוס</th>
+              <th className="py-2 pr-3">הערה</th>
             </tr>
           </thead>
           <tbody>
@@ -152,14 +159,29 @@ export default function UserAttendance() {
                       <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
                       {meta.label}
                     </span>
+                    {r.partial_secondary_type && (
+                      <span
+                        className={`mr-1 inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs ${
+                          DAY_TYPE_META[r.partial_secondary_type].pill
+                        }`}
+                        title="פעילות משנית"
+                      >
+                        <span
+                          className={`h-1.5 w-1.5 rounded-full ${
+                            DAY_TYPE_META[r.partial_secondary_type].dot
+                          }`}
+                        />
+                        + {DAY_TYPE_META[r.partial_secondary_type].label}
+                      </span>
+                    )}
                   </td>
                   <td className="py-2 pr-3 tabular-nums text-ink-700">{r.check_in ?? "—"}</td>
                   <td className="py-2 pr-3 tabular-nums text-ink-700">{r.check_out ?? "—"}</td>
                   <td className="py-2 pr-3 tabular-nums">
                     {r.total_hours?.toFixed(2) ?? "—"}
                   </td>
-                  <td className="py-2 pr-3 text-xs uppercase tracking-wider text-ink-600">
-                    {r.status}
+                  <td className="py-2 pr-3 text-xs text-ink-600">
+                    {STATUS_HE[r.status] ?? r.status}
                   </td>
                   <td className="py-2 pr-3 max-w-[18rem] truncate text-ink-700">{r.note}</td>
                 </tr>
@@ -168,7 +190,7 @@ export default function UserAttendance() {
             {records.length === 0 && !loading && (
               <tr>
                 <td colSpan={7} className="py-6 text-center text-ink-500">
-                  No records this month.
+                  אין רשומות לחודש זה.
                 </td>
               </tr>
             )}

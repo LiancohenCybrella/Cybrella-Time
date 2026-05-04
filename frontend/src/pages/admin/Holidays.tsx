@@ -44,14 +44,14 @@ export default function Holidays() {
   }
 
   async function onDelete(id: number) {
-    if (!confirm("Delete holiday?")) return;
+    if (!confirm("למחוק את החג?")) return;
     await adminApi.deleteHoliday(id);
     await load();
   }
 
   return (
     <AdminLayout>
-      <h1 className="mb-5 text-2xl font-semibold tracking-tight">Holidays</h1>
+      <h1 className="mb-5 text-2xl font-semibold tracking-tight">חגים</h1>
 
       {error && (
         <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
@@ -61,26 +61,26 @@ export default function Holidays() {
 
       <form onSubmit={onAdd} className="card mb-5 grid grid-cols-1 gap-3 sm:grid-cols-4">
         <Input
-          label="Date"
+          label="תאריך"
           type="date"
           required
           value={form.date}
           onChange={(e) => setForm({ ...form, date: e.target.value })}
         />
         <Input
-          label="Title"
+          label="שם החג"
           required
           value={form.title}
           onChange={(e) => setForm({ ...form, title: e.target.value })}
         />
         <Input
-          label="Description"
+          label="תיאור"
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
         />
         <div className="flex items-end">
           <Button type="submit" loading={saving} className="w-full">
-            Add holiday
+            הוסף חג
           </Button>
         </div>
       </form>
@@ -88,10 +88,10 @@ export default function Holidays() {
       <div className="card overflow-x-auto">
         <table className="min-w-full text-sm">
           <thead>
-            <tr className="border-b border-ink-100 text-left text-xs uppercase tracking-wider text-ink-500">
-              <th className="py-2 pr-3">Date</th>
-              <th className="py-2 pr-3">Title</th>
-              <th className="py-2 pr-3">Description</th>
+            <tr className="border-b border-ink-100 text-right text-xs uppercase tracking-wider text-ink-500">
+              <th className="py-2 pr-3">תאריך</th>
+              <th className="py-2 pr-3">שם</th>
+              <th className="py-2 pr-3">תיאור</th>
               <th className="py-2 pr-3"></th>
             </tr>
           </thead>
@@ -101,9 +101,9 @@ export default function Holidays() {
                 <td className="py-2 pr-3 font-medium">{h.date}</td>
                 <td className="py-2 pr-3">{h.title}</td>
                 <td className="py-2 pr-3 text-ink-600">{h.description ?? "—"}</td>
-                <td className="py-2 pr-3 text-right">
+                <td className="py-2 pr-3 text-left">
                   <Button variant="ghost" onClick={() => onDelete(h.id)}>
-                    Delete
+                    מחק
                   </Button>
                 </td>
               </tr>
@@ -111,7 +111,7 @@ export default function Holidays() {
             {holidays.length === 0 && (
               <tr>
                 <td colSpan={4} className="py-6 text-center text-ink-500">
-                  No holidays defined.
+                  אין חגים מוגדרים.
                 </td>
               </tr>
             )}

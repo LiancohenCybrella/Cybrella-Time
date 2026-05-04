@@ -18,11 +18,11 @@ export default function ResetPassword() {
     e.preventDefault();
     setError(null);
     if (!token) {
-      setError("missing token");
+      setError("חסר טוקן");
       return;
     }
     if (password !== confirm) {
-      setError("passwords do not match");
+      setError("הסיסמאות אינן תואמות");
       return;
     }
     setLoading(true);
@@ -37,10 +37,10 @@ export default function ResetPassword() {
   }
 
   return (
-    <AuthShell title="Set new password">
+    <AuthShell title="הגדרת סיסמה חדשה">
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <Input
-          label="New password"
+          label="סיסמה חדשה"
           type="password"
           required
           minLength={8}
@@ -48,7 +48,7 @@ export default function ResetPassword() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <Input
-          label="Confirm password"
+          label="אימות סיסמה"
           type="password"
           required
           minLength={8}
@@ -57,11 +57,11 @@ export default function ResetPassword() {
         />
         {error && <p className="text-sm text-rose-600">{error}</p>}
         <Button type="submit" loading={loading}>
-          Update password
+          עדכן סיסמה
         </Button>
         <p className="text-center text-xs text-ink-600">
           <Link to="/login" className="hover:text-brand-600">
-            Back to sign in
+            חזרה להתחברות
           </Link>
         </p>
       </form>
