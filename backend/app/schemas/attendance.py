@@ -46,6 +46,36 @@ class AttendanceCreate(AttendanceBase):
         return self
 
 
+class AttendanceRangeCreate(BaseModel):
+    start_date: Date
+    end_date: Date
+    day_type: DayType
+    partial_secondary_type: DayType | None = None
+    check_in: time | None = None
+    check_out: time | None = None
+    note: Annotated[str | None, StringConstraints(max_length=2000)] = None
+    skip_existing: bool = True
+
+    @model_validator(mode="after")
+    def _validate(self) -> "AttendanceRangeCreate":
+        if self.end_date < self.start_date:
+            raise ValueError("end_date must be on or after start_date")
+        if (
+            self.partial_secondary_type is not None
+            and self.partial_secondary_type == self.day_type
+        ):
+            raise ValueError("partial_secondary_type must differ from day_type")
+        needs_hours = self.day_type == "work" or self.partial_secondary_type == "work"
+        if needs_hours:
+            if self.check_in is None or self.check_out is None:
+                raise ValueError(
+                    "check_in and check_out required when day involves work"
+                )
+            if self.check_out <= self.check_in:
+                raise ValueError("check_out must be after check_in")
+        return self
+
+
 class AttendanceUpdate(BaseModel):
     date: Date | None = None
     check_in: time | None = None
@@ -64,6 +94,11 @@ class AttendanceOut(AttendanceBase):
     updated_at: datetime | None = None
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class AttendanceRangeResult(BaseModel):
+    created: list[AttendanceOut] = []
+    skipped_dates: list[Date] = []
 
 
 class MonthSummary(BaseModel):

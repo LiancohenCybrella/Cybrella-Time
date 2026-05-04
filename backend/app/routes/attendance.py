@@ -7,6 +7,8 @@ from app.models.user import User
 from app.schemas.attendance import (
     AttendanceCreate,
     AttendanceOut,
+    AttendanceRangeCreate,
+    AttendanceRangeResult,
     AttendanceUpdate,
     MonthAttendanceOut,
 )
@@ -33,6 +35,19 @@ def create_record(
     current_user: User = Depends(get_current_user),
 ) -> AttendanceOut:
     return attendance_service.create_record(db, current_user, payload)
+
+
+@router.post(
+    "/range",
+    response_model=AttendanceRangeResult,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_range(
+    payload: AttendanceRangeCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> AttendanceRangeResult:
+    return attendance_service.create_range(db, current_user, payload)
 
 
 @router.put("/{record_id}", response_model=AttendanceOut)
