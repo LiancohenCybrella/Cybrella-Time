@@ -5,6 +5,7 @@ import { apiError } from "../../api/client";
 import type { User } from "../../api/auth";
 import { AdminLayout } from "../../components/layout/AdminLayout";
 import { Button } from "../../components/ui/Button";
+import { Modal } from "../../components/ui/Modal";
 
 const FILTER_HE: Record<string, string> = {
   all: "הכל",
@@ -18,6 +19,11 @@ export default function Users() {
   const [users, setUsers] = useState<User[]>([]);
   const [filter, setFilter] = useState<"all" | "active" | "inactive">("all");
   const [error, setError] = useState<string | null>(null);
+  const [resetResult, setResetResult] = useState<adminApi.AdminPasswordReset | null>(
+    null
+  );
+  const [copied, setCopied] = useState(false);
+  const [resetting, setResetting] = useState(false);
 
   async function load() {
     setError(null);
@@ -45,6 +51,36 @@ export default function Users() {
   async function reactivate(id: number) {
     await adminApi.updateUser(id, { is_active: true });
     await load();
+  }
+
+  async function onResetPassword(u: User) {
+    if (
+      !confirm(
+        `לאפס את הסיסמה של ${u.full_name}? תיווצר סיסמה זמנית והמשתמש יחויב להחליף בכניסה הבאה.`
+      )
+    )
+      return;
+    setResetting(true);
+    setError(null);
+    try {
+      const res = await adminApi.resetUserPassword(u.id);
+      setResetResult(res);
+      setCopied(false);
+    } catch (err) {
+      setError(apiError(err));
+    } finally {
+      setResetting(false);
+    }
+  }
+
+  async function copyTemp() {
+    if (!resetResult) return;
+    try {
+      await navigator.clipboard.writeText(resetResult.temp_password);
+      setCopied(true);
+    } catch {
+      setCopied(false);
+    }
   }
 
   return (
@@ -116,6 +152,13 @@ export default function Users() {
                     >
                       נוכחות
                     </Link>
+                    <Button
+                      variant="ghost"
+                      onClick={() => onResetPassword(u)}
+                      loading={resetting}
+                    >
+                      אפס סיסמה
+                    </Button>
                     {u.is_active ? (
                       <Button variant="ghost" onClick={() => deactivate(u.id)}>
                         השבת
@@ -139,6 +182,37 @@ export default function Users() {
           </tbody>
         </table>
       </div>
+
+      <Modal
+        open={resetResult !== null}
+        onClose={() => setResetResult(null)}
+        title="סיסמה זמנית נוצרה"
+      >
+        {resetResult && (
+          <div className="flex flex-col gap-3">
+            <p className="text-sm text-ink-700">
+              העבר את הסיסמה הבאה אל <strong>{resetResult.email}</strong>. בכניסה
+              הבאה הוא יחויב להחליף סיסמה.
+            </p>
+            <div className="flex items-center gap-2 rounded-xl border border-ink-200 bg-ink-50 p-3">
+              <code className="flex-1 select-all font-mono text-base text-ink-900">
+                {resetResult.temp_password}
+              </code>
+              <Button variant="ghost" type="button" onClick={copyTemp}>
+                {copied ? "הועתק ✓" : "העתק"}
+              </Button>
+            </div>
+            <p className="text-xs text-ink-500">
+              הסיסמה לא תוצג שוב. אם איבדת אותה — אפס שוב.
+            </p>
+            <div className="flex justify-end">
+              <Button type="button" onClick={() => setResetResult(null)}>
+                סיימתי
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
     </AdminLayout>
   );
 }

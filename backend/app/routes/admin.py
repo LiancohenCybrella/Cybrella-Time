@@ -15,8 +15,18 @@ from app.schemas.allowed_email import (
     AllowedEmailOut,
     AllowedEmailUpdate,
 )
-from app.schemas.user import MessageOut, UserAdminUpdate, UserOut
-from app.services import allowed_email_service, approval_service, attendance_service
+from app.schemas.user import (
+    AdminPasswordResetOut,
+    MessageOut,
+    UserAdminUpdate,
+    UserOut,
+)
+from app.services import (
+    allowed_email_service,
+    approval_service,
+    attendance_service,
+    auth_service,
+)
 from app.services.export_service import export_month_xlsx
 
 
@@ -81,6 +91,23 @@ def deactivate_user(
     u.is_active = False
     db.commit()
     return MessageOut(message="user deactivated")
+
+
+@router.post(
+    "/users/{user_id}/reset-password",
+    response_model=AdminPasswordResetOut,
+)
+def admin_reset_user_password(
+    user_id: int,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_admin),
+) -> AdminPasswordResetOut:
+    user, temp_password = auth_service.admin_reset_password(db, user_id)
+    return AdminPasswordResetOut(
+        user_id=user.id,
+        email=user.email,
+        temp_password=temp_password,
+    )
 
 
 # ---------- attendance ----------

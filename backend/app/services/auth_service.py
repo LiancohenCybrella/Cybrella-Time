@@ -128,4 +128,25 @@ def change_password(db: Session, user: User, payload: ChangePasswordIn) -> None:
             detail="current password is incorrect",
         )
     user.password_hash = hash_password(payload.new_password)
+    user.must_change_password = False
     db.commit()
+
+
+def admin_reset_password(db: Session, target_user_id: int) -> tuple[User, str]:
+    import secrets
+    import string
+
+    user = db.get(User, target_user_id)
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="user not found"
+        )
+
+    alphabet = string.ascii_letters + string.digits
+    temp = "".join(secrets.choice(alphabet) for _ in range(12))
+
+    user.password_hash = hash_password(temp)
+    user.must_change_password = True
+    db.commit()
+    db.refresh(user)
+    return user, temp

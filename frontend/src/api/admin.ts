@@ -24,6 +24,20 @@ export async function deactivateUser(id: number): Promise<void> {
   await api.delete(`/admin/users/${id}`);
 }
 
+export interface AdminPasswordReset {
+  user_id: number;
+  email: string;
+  temp_password: string;
+  message: string;
+}
+
+export async function resetUserPassword(id: number): Promise<AdminPasswordReset> {
+  const { data } = await api.post<AdminPasswordReset>(
+    `/admin/users/${id}/reset-password`
+  );
+  return data;
+}
+
 export async function listAttendance(params: {
   user_id?: number;
   month?: string;

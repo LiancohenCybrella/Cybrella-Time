@@ -2,12 +2,15 @@ import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { changePassword } from "../../api/auth";
 import { apiError } from "../../api/client";
+import { useAuth } from "../../auth/AuthContext";
 import { UserLayout } from "../../components/layout/UserLayout";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
 
 export default function ChangePassword() {
   const navigate = useNavigate();
+  const { user, refresh } = useAuth();
+  const forced = !!user?.must_change_password;
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -24,7 +27,8 @@ export default function ChangePassword() {
     setSaving(true);
     try {
       await changePassword(current, next);
-      navigate("/profile", { replace: true });
+      await refresh();
+      navigate(forced ? "/" : "/profile", { replace: true });
     } catch (err) {
       setError(apiError(err));
     } finally {
@@ -35,6 +39,11 @@ export default function ChangePassword() {
   return (
     <UserLayout>
       <h1 className="mb-5 text-2xl font-semibold tracking-tight">שינוי סיסמה</h1>
+      {forced && (
+        <div className="mb-4 max-w-md rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+          קיבלת סיסמה זמנית מהמנהל. יש להחליף סיסמה לפני המשך השימוש.
+        </div>
+      )}
       <form onSubmit={onSubmit} className="card flex max-w-md flex-col gap-4">
         <Input
           label="סיסמה נוכחית"
